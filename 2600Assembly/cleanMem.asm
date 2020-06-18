@@ -10,10 +10,11 @@ Start:
 
     lda #0
     ldx #$FF
-
+    sta $FF
+    
 memLoop:
-    sta 0,X
     dex
+    sta 0,X
     bne memLoop
 
     org $FFFC
