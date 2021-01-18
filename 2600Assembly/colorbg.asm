@@ -9,7 +9,7 @@
 START:
     ;CLEAN_START
 
-    lda #$1E
+    lda #$1A
     sta COLUBK
 
     jmp START
