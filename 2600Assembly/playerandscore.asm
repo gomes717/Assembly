@@ -4,6 +4,11 @@
     include "vcs.h"
     include "macro.h"
 
+    seg.u variables
+    org $80
+P0Height ds 1       ;defines 1 byte for this variable
+P1Height ds 1
+
     seg code
     org $F000
 
@@ -21,6 +26,10 @@ Reset:
 
     lda #$C6
     sta COLUP1
+
+    lda #10
+    sta P0Height  ;P0Height = 10
+    sta P1Height  ;P1Height = 10
 
 Startframe:
     lda #02
@@ -50,7 +59,8 @@ Startframe:
 
     ;start playfield
     ;dont allow playfield to reflect
-    ldx #$00000000      ;D0 = 0
+    ;score having the same color of the players
+    ldx #%00000010      ;D1 = 1
     stx CTRLPF
 
     ;Start 192 lines of visible lines
@@ -85,24 +95,24 @@ ScoreBoardLoop:             ;Loop y<10
     REPEND
 
     ldy #0
-Player0Loop:             ;Loop y<10
+Player0Loop:             ;Loop y<P0Height
     lda Playerbitmap,Y
     sta GRP0
     sta WSYNC
     iny
-    cpy #10
+    cpy P0Height
     bne Player0Loop
 
     lda #0
     sta GRP0
 
     ldy #0
-Player1Loop:             ;Loop y<10
+Player1Loop:             ;Loop y<P1Height
     lda Playerbitmap,Y
     sta GRP1
     sta WSYNC
     iny
-    cpy #10
+    cpy P1Height
     bne Player1Loop
 
     lda #0
@@ -126,17 +136,17 @@ Player1Loop:             ;Loop y<10
     jmp Startframe
 
     org $FFE8
-Playerbitmap:
-    .byte #%00011000
-    .byte #%11011011
-    .byte #%11011011
-    .byte #%11111111
-    .byte #%11111111
-    .byte #%11111111
-    .byte #%11111111
-    .byte #%11111111
-    .byte #%11000011
-    .byte #%11000011
+Playerbitmap:         ;TANQUE
+    .byte #%00011000  ;   xx    
+    .byte #%11011011  ;xx xx xx
+    .byte #%11011011  ;xx xx xx
+    .byte #%11111111  ;xxxxxxxx
+    .byte #%11111111  ;xxxxxxxx
+    .byte #%11111111  ;xxxxxxxx
+    .byte #%11111111  ;xxxxxxxx
+    .byte #%11111111  ;xxxxxxxx
+    .byte #%11000011  ;xx    xx
+    .byte #%11000011  ;xx    xx
 
     org $FFF2
 Numberbitmap:
